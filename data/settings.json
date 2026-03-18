@@ -1,0 +1,26 @@
+{
+  "users": {
+    "496807443": {
+      "notifications": {
+        "daily_report": true,
+        "closing_report": true,
+        "price_alerts": true,
+        "volatility_alerts": true
+      },
+      "report_time": "18:00",
+      "volatility_threshold": 5.0,
+      "price_change_threshold": 3.0
+    }
+  },
+  "default_settings": {
+    "notifications": {
+      "daily_report": true,
+      "closing_report": true,
+      "price_alerts": true,
+      "volatility_alerts": true
+    },
+    "report_time": "18:00",
+    "volatility_threshold": 5.0,
+    "price_change_threshold": 3.0
+  }
+}

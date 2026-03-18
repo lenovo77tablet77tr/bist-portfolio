@@ -1,0 +1,14 @@
+{
+  "bist_stocks": [
+    "AKBNK", "ARCLK", "ASELS", "BIMAS", "EKGYO", "ENKAI", "EREGL", 
+    "FROTO", "GARAN", "HALKB", "HEKTS", "ISCTR", "KCHOL", "KOZAA", 
+    "KOZAL", "KRDMD", "MGROS", "OYAKC", "PETKM", "PGSUS", "SAHOL", 
+    "SASA", "SISE", "TAVHL", "TCELL", "THYAO", "TKFEN", "TOASO", 
+    "TSKB", "TTKOM", "TUPRS", "VAKBN", "YKBNK", "ZOREN"
+  ],
+  "market_hours": {
+    "open": "09:30",
+    "close": "18:00",
+    "weekend": false
+  }
+}
