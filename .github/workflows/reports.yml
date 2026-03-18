@@ -8,6 +8,9 @@ on:
     - cron: '0 15 * * 1-5'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   send-reports:
     runs-on: ubuntu-latest
@@ -19,7 +22,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -43,38 +46,7 @@ jobs:
         ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
         ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
       run: |
-        python -c "
-import sys
-sys.path.append('src')
-from telegram_bot import BistPortfolioBot
-from github_sync import GitHubSync
-
-bot = BistPortfolioBot()
-github_sync = GitHubSync()
-
-# Send daily reports to all users
-for user_id_str in bot.portfolio_manager.portfolio_data.get('users', {}):
-    user_id = int(user_id_str)
-    user_settings = bot.portfolio_manager.get_user_settings(user_id)
-    
-    if user_settings['notifications']['daily_report']:
-        report = bot.portfolio_manager.generate_detailed_report(user_id)
-        
-        try:
-            import telegram
-            application = telegram.ext.Application.builder().token('${{ secrets.TELEGRAM_BOT_TOKEN }}').build()
-            await application.bot.send_message(
-                chat_id=user_id,
-                text=report,
-                parse_mode='Markdown'
-            )
-            print(f'Daily report sent to user {user_id}')
-        except Exception as e:
-            print(f'Error sending daily report to {user_id}: {e}')
-
-# Sync data
-github_sync.sync_data()
-"
+        python scripts/send_daily_reports.py
         
     - name: Send Closing Reports
       if: github.event.schedule == '0 15 * * 1-5'
@@ -86,38 +58,7 @@ github_sync.sync_data()
         ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
         ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
       run: |
-        python -c "
-import sys
-sys.path.append('src')
-from telegram_bot import BistPortfolioBot
-from github_sync import GitHubSync
-
-bot = BistPortfolioBot()
-github_sync = GitHubSync()
-
-# Send closing reports to all users
-for user_id_str in bot.portfolio_manager.portfolio_data.get('users', {}):
-    user_id = int(user_id_str)
-    user_settings = bot.portfolio_manager.get_user_settings(user_id)
-    
-    if user_settings['notifications']['closing_report']:
-        report = bot.portfolio_manager.generate_closing_report(user_id)
-        
-        try:
-            import telegram
-            application = telegram.ext.Application.builder().token('${{ secrets.TELEGRAM_BOT_TOKEN }}').build()
-            await application.bot.send_message(
-                chat_id=user_id,
-                text=report,
-                parse_mode='Markdown'
-            )
-            print(f'Closing report sent to user {user_id}')
-        except Exception as e:
-            print(f'Error sending closing report to {user_id}: {e}')
-
-# Sync data
-github_sync.sync_data()
-"
+        python scripts/send_closing_reports.py
         
     - name: Commit and push changes
       if: success()

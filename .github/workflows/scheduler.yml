@@ -6,6 +6,9 @@ on:
     - cron: '*/5 6-15 * * 1-5'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-alarms:
     runs-on: ubuntu-latest
@@ -17,7 +20,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -40,46 +43,7 @@ jobs:
         ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
         ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
       run: |
-        python -c "
-import sys
-sys.path.append('src')
-from telegram_bot import BistPortfolioBot
-from github_sync import GitHubSync
-
-bot = BistPortfolioBot()
-github_sync = GitHubSync()
-
-# Check alarms
-triggered_alarms = bot.portfolio_manager.check_alarms()
-
-# Send notifications
-for alarm_data in triggered_alarms:
-    user_id = alarm_data['user_id']
-    alarm = alarm_data['alarm']
-    
-    alarm_text = 'üzerine çıktı' if alarm['type'] == 'above' else 'altına düştü'
-    message = (
-        f'🔔 **ALARM!**\n\n'
-        f'📈 {alarm[\"symbol\"]} hedef fiyata {alarm_text}!\n'
-        f'🎯 Hedef Fiyat: {alarm[\"target_price\"]:.2f} TL\n'
-        f'💰 Mevcut Fiyat: {alarm[\"triggered_price\"]:.2f} TL'
-    )
-    
-    try:
-        import telegram
-        application = telegram.ext.Application.builder().token('${{ secrets.TELEGRAM_BOT_TOKEN }}').build()
-        await application.bot.send_message(
-            chat_id=user_id,
-            text=message,
-            parse_mode='Markdown'
-        )
-    except Exception as e:
-        print(f'Error sending alarm to {user_id}: {e}')
-
-# Sync data if there were changes
-if triggered_alarms:
-    github_sync.sync_data()
-"
+        python scripts/check_alarms.py
         
     - name: Commit and push changes
       if: success()
