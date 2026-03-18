@@ -74,8 +74,8 @@ cp .env.example .env
 
 `.env` dosyasını düzenleyin:
 ```env
-TELEGRAM_BOT_TOKEN=8521102221:AAEJrpjEUgMEEBIPl-bzkd8sUGU_U1Tsyd8
-GITHUB_REPO_USERNAME=b_ozgur
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+GITHUB_REPO_USERNAME=lenovo77tablet77tr
 GITHUB_REPO_NAME=bist-portfolio
 GITHUB_TOKEN=github_personal_access_tokenunuz
 ADMIN_USER_ID=496807443
