@@ -3,9 +3,6 @@ import json
 import logging
 from datetime import datetime
 from git import Repo
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class GitHubSync:
     def __init__(self):
