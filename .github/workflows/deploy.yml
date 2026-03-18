@@ -30,9 +30,5 @@ jobs:
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         GITHUB_REPO_USERNAME: ${{ secrets.GITHUB_REPO_USERNAME }}
-        GITHUB_REPO_NAME: ${{ secrets.GITHUB_REPO_NAME }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
-        ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
       run: |
         python main.py
